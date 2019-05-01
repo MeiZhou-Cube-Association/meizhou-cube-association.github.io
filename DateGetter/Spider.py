@@ -49,3 +49,67 @@ def getPersonInfo(personList):
         eachPerson.append(eventsDict)
         return 
             
+def printPersonInfo(personList,flag):
+    if flag == 1:
+        for person in personList:
+            print (person[0],'\n',person[1])
+            for item in person[3].keys():
+                print (item,'  ',person[3][item][0],'|',person[3][item][1])
+    else:
+        print (len(personList),'items')
+        for i in range(4):
+            print (i+1,'. ',personList[i][0],'\n',personList[i][1])
+        print ('......')
+def GenMsg(personList, num):
+    msg = ""
+    if num == 1:
+        for person in personList:
+            # print (person[0],'\n',person[1])
+            msg += str(person[0])+'\n'+str(person[1])+'\n'
+            for item in person[3].keys():
+                # print (item,'  ',person[3][item][0],'|',person[3][item][1])
+                msg += str(item)+' '+str(person[3][item][0])+'|'+str(person[3][item][1])+'\n'
+    else:
+        # print (len(personList),'items')
+        msg += str(len(personList))+' items'+'\n'
+        for i in range(4):
+            # print (i+1,'. ',personList[i][0],'\n',personList[i][1])
+            msg += str(i+1)+'. '+str(personList[i][0])+'\n'+str(personList[i][1])+'\n'
+        # print ('......')
+        msg += '......'
+    return msg
+
+def main():
+    keyWord = input('Please Input')
+    rootURL = 'https://cubingchina.com/results/person?region=World&gender=all&name='
+    personList=[]
+    num = int()
+    
+    resultHTML = getHTMLText (rootURL+keyWord)
+    num = getPersonList (personList, resultHTML)  
+    getPersonURL(personList)
+    getPersonInfo(personList)
+    
+    if num == 1:
+        printPersonInfo(personList,flag = 1)
+    else :
+        printPersonInfo(personList,flag = 0)
+    return 
+def ProcessName(name):
+    rootURL = 'https://cubingchina.com/results/person?region=World&gender=all&name='
+    personList=[]
+    num = int()
+    
+    resultHTML = getHTMLText (rootURL+name)
+    num = getPersonList (personList, resultHTML)  
+    getPersonURL(personList)
+    getPersonInfo(personList)
+
+    if num == 1:
+        msg = GenMsg(personList, 1)
+    else:
+        msg = GenMsg(personList, 0)
+    return msg
+
+if __name__ == "__main__":
+    main()

@@ -1,5 +1,6 @@
 import re
 import pandas as pd
+from Spider import *
 
 def LocateTable():
     html_file = open("../index.html", encoding='utf-8')
@@ -18,6 +19,20 @@ def ConvertToHtml(title, data_cols):
     df = df[title]
     h = df.to_html(index=False)
     return h
+def ADDLink(html, name_to_url):
+    html_in_line = html.split('\n')
+    print(html_in_line[11])
+    print(html_in_line[17])
+    print(html_in_line[23])
+    print(html_in_line[11][10:-5])
+    print(html_in_line[17][10:-5])
+    print(html_in_line[23][10:-5])
+    html_in_line[11] = "<td> <a href=\"%s\">%s</a> </td>"%(name_to_url[html_in_line[11][10:-5]], html_in_line[11][10:-5])
+    html_in_line[17] = "<td> <a href=\"%s\">%s</a> </td>"%(name_to_url[html_in_line[17][10:-5]], html_in_line[17][10:-5])
+    html_in_line[23] = "<td> <a href=\"%s\">%s</a> </td>"%(name_to_url[html_in_line[23][10:-5]], html_in_line[23][10:-5])
+    html = "".join(html_in_line)
+    return html
+
 def ApplyCss():
     html_file = open("../index.html", encoding='utf-8')
     html = "".join(html_file)
@@ -25,10 +40,18 @@ def ApplyCss():
     return regex.sub('<table border="1" class="dataframe mystyle">', html)
 
 if __name__ == '__main__':
-    data_cols = [['2016-08-25','2016-08-26','2016-08-27'], ['张三','李四','王二'], ['0769', '0976', '0999']]
-    title = ['日期', '姓名', '学号']
+    data_cols = [['张三','李四','王二而'], [666, 666, 666], ['2016-08-25','2016-08-26','2016-08-27'], ['0769', '0976', '0999']]
+    title = ['姓名', '成绩', '日期', '详情']
+    html = ConvertToHtml(title, data_cols)
     print(ConvertToHtml(title, data_cols))
-    html = ApplyCss()
-    f = open("../index.html", encoding='utf-8', mode='w')
+
+    name_to_url = {}
+    name_to_url['张三'] = 'https://www.baidu.com'
+    name_to_url['李四'] = 'https://www.github.com'
+    name_to_url['王二而'] = 'https://www.nwpu.edu.cn'
+    html = ADDLink(html, name_to_url)
+
+    # html = ApplyCss()
+    f = open("../yayaya.html", encoding='utf-8', mode='w')
     f.write(html)
 

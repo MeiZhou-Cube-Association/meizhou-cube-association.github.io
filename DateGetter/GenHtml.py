@@ -1,13 +1,14 @@
 import re
 import pandas as pd
 
-def LocateTable(html):
-    pass
+def LocateTable():
+    html_file = open("../index.html", encoding='utf-8')
+    html = "".join("".join(html_file.readlines()).split('\n'))
+    
+    html_parts = re.split("<table.*?.</table>", html)
+    return html_parts
 
-def convertToHtml(result,title):
-    #将数据转换为html的table
-    #result是list[list1,list2]这样的结构
-    #title是list结构；和result一一对应。titleList[0]对应resultList[0]这样的一条数据对应html表格中的一列
+def convertToHtml(title, result):
     d = {}
     index = 0
     for t in title:
@@ -19,7 +20,7 @@ def convertToHtml(result,title):
     return h
 
 if __name__ == '__main__':
-    result = [[u'2016-08-25',u'2016-08-26',u'2016-08-27'],[u'张三',u'李四',u'王二']]
-    title = [u'日期',u'姓名']
-    print(convertToHtml(result,title))
+    result = [['2016-08-25','2016-08-26','2016-08-27'], ['张三','李四','王二'], ['0769', '0976', '0999']]
+    title = ['日期', '姓名', '学号']
+    print(convertToHtml(title, result))
 

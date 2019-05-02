@@ -6,7 +6,7 @@ from Spider import *
 
 from nonebot import on_command, CommandSession, on_natural_language,NLPSession, IntentCommand
 
-@on_command('wca')
+@on_command('wca', only_to_me=False)
 async def wca(session: CommandSession):
     people = session.get('people', prompt='你想查谁？')
 
@@ -32,7 +32,7 @@ async def _(session: CommandSession):
 async def _(session: NLPSession):
     stripped_msg = session.msg_text.strip()
     people = stripped_msg.split("wca")[-1]
-    print(people)
+    # print(people)
     return IntentCommand(90.0, 'wca', current_arg=people)
 
 
@@ -41,7 +41,7 @@ async def get_wca_performance(people: str) -> str:
     name = f'{people}'
     print(name)
     msg = ProcessName(name)
-    print(msg)
+    # print(msg)
     return msg
 
 # @on_command()

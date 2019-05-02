@@ -61,7 +61,9 @@ def printPersonInfo(personList,flag):
             print (i+1,'. ',personList[i][0],'\n',personList[i][1])
         print ('......')
 def GenMsg(personList, num):
+
     msg = ""
+
     if num == 1:
         for person in personList:
             # print (person[0],'\n',person[1])
@@ -72,11 +74,28 @@ def GenMsg(personList, num):
     else:
         # print (len(personList),'items')
         msg += str(len(personList))+' items'+'\n'
-        for i in range(4):
+        for i in range(min(len(personList), 4)):
             # print (i+1,'. ',personList[i][0],'\n',personList[i][1])
             msg += str(i+1)+'. '+str(personList[i][0])+'\n'+str(personList[i][1])+'\n'
         # print ('......')
         msg += '......'
+    # print(msg)
+    return msg
+def GenResMsg(personList, num):
+    msg = ""
+    if num == 1:
+        for person in personList:
+            # print (person[0],'\n',person[1])
+            msg += str(person[0])+'\n'+str(person[1])+'\n'
+    else:
+        # print (len(personList),'items')
+        msg += str(len(personList))+' items'+'\n'
+        for i in range(min(len(personList), 4)):
+            # print (i+1,'. ',personList[i][0],'\n',personList[i][1])
+            msg += str(i+1)+'. '+str(personList[i][0])+'\n'+str(personList[i][1])+'\n'
+        # print ('......')
+        msg += '......'
+    # print(msg)
     return msg
 
 def main():
@@ -96,20 +115,51 @@ def main():
         printPersonInfo(personList,flag = 0)
     return 
 def ProcessName(name):
-    rootURL = 'https://cubingchina.com/results/person?region=World&gender=all&name='
-    personList=[]
-    num = int()
-    
-    resultHTML = getHTMLText (rootURL+name)
-    num = getPersonList (personList, resultHTML)  
-    getPersonURL(personList)
-    getPersonInfo(personList)
+    try:
+        rootURL = 'https://cubingchina.com/results/person?region=World&gender=all&name='
+        personList=[]
+        num = int()
+        
+        resultHTML = getHTMLText (rootURL+name)
+        num = getPersonList (personList, resultHTML)  
+        getPersonURL(personList)
+        getPersonInfo(personList)
+        if num == 1:
+            msg = GenMsg(personList, 1)
+        else:
+            msg = GenMsg(personList, 0)
+        return msg
+    except:
 
-    if num == 1:
-        msg = GenMsg(personList, 1)
-    else:
-        msg = GenMsg(personList, 0)
-    return msg
+        return "莫得人，也莫得成绩"
+def ProcessResName(name):
+    try:
+        rootURL = 'https://cubingchina.com/results/person?region=World&gender=all&name='
+        personList=[]
+        num = int()
+        
+        resultHTML = getHTMLText (rootURL+name)
+        num = getPersonList (personList, resultHTML)  
+        getPersonURL(personList)
+        getPersonInfo(personList)
+        if num == 1:
+            msg = GenResMsg(personList, 1)
+        else:
+            msg = GenResMsg(personList, 0)
+        return msg
+    except:
 
+        return "莫得人，也莫得成绩"
+def ProcessId(name):
+    try:
+        rootURL = 'https://cubingchina.com/results/person?region=World&gender=all&name='
+        personList=[]
+        num = int()
+        
+        resultHTML = getHTMLText (rootURL+name)
+        num = getPersonList (personList, resultHTML)  
+        return num
+    except:
+        return -1
 if __name__ == "__main__":
     main()

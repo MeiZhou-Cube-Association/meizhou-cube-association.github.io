@@ -39,6 +39,7 @@ def ApplyCss():
     regex = re.compile("<table.*")
     return regex.sub('<table border="1" class="dataframe mystyle">', html)
 
+
 if __name__ == '__main__':
     data_cols = [['张三','李四','王二而'], [666, 666, 666], ['2016-08-25','2016-08-26','2016-08-27'], ['0769', '0976', '0999']]
     title = ['姓名', '成绩', '日期', '详情']

@@ -29,7 +29,8 @@ async def addrank(session: CommandSession):
         print("ans: ", answer)
         if answer in ['y', 'Y']:
             await session.send("已加入数据库")
-            AddName(people, "../")
+            # print(wca_performance.split('\n'))
+            AddId(wca_performance.split('\n')[1], "../")
         else:
             await session.send("你吼那么大声干嘛")
     else:

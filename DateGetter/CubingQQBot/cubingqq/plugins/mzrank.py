@@ -6,6 +6,7 @@ from Spider import *
 
 from nonebot import on_command, CommandSession, on_natural_language,NLPSession, IntentCommand
 
+
 @on_command('wca')
 async def wca(session: CommandSession):
     people = session.get('people', prompt='你想查谁？')

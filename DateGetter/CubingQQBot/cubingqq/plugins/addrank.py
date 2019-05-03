@@ -9,7 +9,7 @@ from nonebot import on_command, CommandSession, on_natural_language, NLPSession,
 
 questioned = False
 
-@on_command('addrank', only_to_me=True)
+@on_command('addrank', only_to_me=True, permission=0xF000)
 async def addrank(session: CommandSession):
     global questioned
     # print('fuc called')
@@ -30,7 +30,7 @@ async def addrank(session: CommandSession):
         if answer in ['y', 'Y']:
             await session.send("已加入数据库")
             # print(wca_performance.split('\n'))
-            AddId(wca_performance.split('\n')[1], "../")
+            AddId(wca_performance.split('\n'), "../")
         else:
             await session.send("你吼那么大声干嘛")
     else:

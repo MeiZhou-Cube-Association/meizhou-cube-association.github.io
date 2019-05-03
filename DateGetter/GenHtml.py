@@ -35,8 +35,8 @@ def ADDLink(html, name_to_url):
     return html
 
 def ApplyCss(html):
-    prefix = '<link rel="stylesheet" type="text/css", href="./CSS/df_style.css">'
-    html = prefix+html
+    # prefix = '<link rel="stylesheet" type="text/css", href="./CSS/df_style.css">'
+    # html = prefix+html
     regex = re.compile("<table.*")
     return regex.sub('<table border="1" class="dataframe mystyle">', html)
 
@@ -113,24 +113,35 @@ if __name__ == '__main__':
             event = e
             mode  = m
             event_to_rank[e+mode_str[m]] = sorted(name_list, key=for_sort)[:3]
-    html = ""
+    table_html_part = []
     for i in event_to_rank:
         title = ['姓名', '成绩', '日期', '详情']
         data_cols = []
         data_cols.append(event_to_rank[i])
+
+        # perform part 
+
         for i in range(3):
             t_list = ['']*3
             data_cols.append(t_list)
-        html += "<hr>"
-        html += ConvertToHtml(title, data_cols)
-    # print(html)
-    html = ApplyCss(html)
+        html = ApplyCss(ConvertToHtml(title, data_cols))
+        table_html_part.append(html)
+    for i in range(3):
+        table_html_part.append(table_html_part[-1])
+    print(len(table_html_part))
+    # f = open("../yayaya.html", encoding='utf-8', mode='w')
+    # f.write(html)
+
+    tem_html_part = LocateTable()
+    html_parts = []
+
+    for i,j in zip(tem_html_part, range(len(tem_html_part)-1)):
+        html_parts.append(i)
+        html_parts.append(table_html_part[j])
+    html_parts.append(html_parts[-1])
+
+    html = "".join(html_parts)
+
     f = open("../yayaya.html", encoding='utf-8', mode='w')
     f.write(html)
-
-    # # print(event_to_rank)
-    # for i in event_to_rank:
-    #     for j in event_to_rank[i]:
-            
-    
     

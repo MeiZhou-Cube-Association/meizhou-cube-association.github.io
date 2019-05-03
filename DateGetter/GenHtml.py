@@ -60,22 +60,34 @@ event = '三阶'
 mode = 0
 
 def for_sort(item):
+    
     if event in name_to_data[item]:
         if mode:
             if name_to_data[item][event][mode] != ' ':
                 try:
-                    return time.strptime(name_to_data[item][event][mode], "%S.%f")
+                    ttt = float(name_to_data[item][event][mode])
+                    # return time.strptime(name_to_data[item][event][mode], "%S.%f")
                 except:
-                    return time.strptime(name_to_data[item][event][mode], "%M:%S.%f")
+                    ttt = float(name_to_data[item][event][mode].split(':')[0])*60 + float(name_to_data[item][event][mode].split(':')[1])
+                    # return time.strptime(name_to_data[item][event][mode], "%M:%S.%f")
             else:
-                return time.strptime('10.0', "%H.%f")
+                ttt =  10000000.0
+                # return time.strptime('10.0', "%H.%f")
         else:
             try:
-                return time.strptime(name_to_data[item][event][mode], "%S.%f")
+                ttt = float(name_to_data[item][event][mode])
+                # return time.strptime(name_to_data[item][event][mode], "%S.%f")
             except:
-                return time.strptime(name_to_data[item][event][mode], "%M:%S.%f")
+                ttt = float(name_to_data[item][event][mode].split(':')[0])*60 + float(name_to_data[item][event][mode].split(':')[1])
+                # return time.strptime(name_to_data[item][event][mode], "%M:%S.%f")
     else:
-        return time.strptime('10.0', "%H.%f")
+        ttt =  10000000.0
+    if item == 'Zhihan Wang (王祉晗)':
+        print(ttt)
+    if item == 'Yan Cai (蔡彦)':
+        print('c',ttt)
+    return ttt
+        # return time.strptime('10.0', "%H.%f")
 
 
 if __name__ == '__main__':
@@ -102,6 +114,7 @@ if __name__ == '__main__':
     name_list = [i.split(',')[1] for i in id_list]
 
     name_to_data = dict(zip(name_list, data_list))
+    print(name_to_data['Kaiwen Zhong (钟凯文)'])
     # print(name_to_data)
     # print(name_to_data['Yuan Cao (操源)']['三阶'][1])
     events = ['三阶', '二阶', '四阶', '五阶', '六阶', '三盲', '最少步', '单手', '脚拧', '魔表', '五魔方', '金字塔', '斜转', 'SQ1', '四盲', '五盲', '多盲']
@@ -112,9 +125,11 @@ if __name__ == '__main__':
         for m in modes:
             event = e
             mode  = m
+            # print(sorted(name_list, key=for_sort))
             event_to_rank[e+mode_str[m]] = sorted(name_list, key=for_sort)[:3]
     table_html_part = []
     for i in event_to_rank:
+        print(i, event_to_rank[i])
         title = ['姓名', '成绩', '日期', '详情']
         data_cols = []
         # data_cols.append(event_to_rank[i])
@@ -123,7 +138,7 @@ if __name__ == '__main__':
         people_list = []
         grade_list = []
         for people in event_to_rank[i]:
-            e = i[:2]
+            e = i[:-2]
             m_str = i[2:]
             if m_str == '单次':
                 m = 0
@@ -135,7 +150,7 @@ if __name__ == '__main__':
             else:
                 people_list.append('')
                 grade_list.append('')
-
+        print(people_list, grade_list)
         data_cols.append(people_list)
         data_cols.append(grade_list)
 
@@ -146,7 +161,7 @@ if __name__ == '__main__':
         table_html_part.append(html)
     for i in range(3):
         table_html_part.append(table_html_part[-1])
-    print(len(table_html_part))
+    # print(len(table_html_part))
     # f = open("../yayaya.html", encoding='utf-8', mode='w')
     # f.write(html)
 

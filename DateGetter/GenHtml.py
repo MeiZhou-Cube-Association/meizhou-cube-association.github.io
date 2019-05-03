@@ -4,7 +4,7 @@ import pandas as pd
 from Spider import *
 
 def LocateTable():
-    html_file = open("../index.html", encoding='utf-8')
+    html_file = open("../template.html", encoding='utf-8')
     html = "".join("".join(html_file.readlines()).split('\n'))
     
     html_parts = re.split("<table.*?.</table>", html)
@@ -117,11 +117,29 @@ if __name__ == '__main__':
     for i in event_to_rank:
         title = ['姓名', '成绩', '日期', '详情']
         data_cols = []
-        data_cols.append(event_to_rank[i])
+        # data_cols.append(event_to_rank[i])
 
         # perform part 
+        people_list = []
+        grade_list = []
+        for people in event_to_rank[i]:
+            e = i[:2]
+            m_str = i[2:]
+            if m_str == '单次':
+                m = 0
+            else:
+                m = 1
+            if e in name_to_data[people]:
+                people_list.append(people)
+                grade_list.append(name_to_data[people][e][m])
+            else:
+                people_list.append('')
+                grade_list.append('')
 
-        for i in range(3):
+        data_cols.append(people_list)
+        data_cols.append(grade_list)
+
+        for i in range(2):
             t_list = ['']*3
             data_cols.append(t_list)
         html = ApplyCss(ConvertToHtml(title, data_cols))
@@ -142,6 +160,6 @@ if __name__ == '__main__':
 
     html = "".join(html_parts)
 
-    f = open("../yayaya.html", encoding='utf-8', mode='w')
+    f = open("../index.html", encoding='utf-8', mode='w')
     f.write(html)
     

@@ -117,7 +117,7 @@ if __name__ == '__main__':
     print(name_to_data['Kaiwen Zhong (钟凯文)'])
     # print(name_to_data)
     # print(name_to_data['Yuan Cao (操源)']['三阶'][1])
-    events = ['三阶', '二阶', '四阶', '五阶', '六阶', '三盲', '最少步', '单手', '脚拧', '魔表', '五魔方', '金字塔', '斜转', 'SQ1', '四盲', '五盲', '多盲']
+    events = ['三阶', '二阶', '四阶', '五阶', '六阶', '七阶', '三盲', '最少步', '单手', '脚拧', '魔表', '五魔方', '金字塔', '斜转', 'SQ1', '四盲', '五盲', '多盲']
     modes = [0, 1]
     mode_str = ['单次', '平均']
     event_to_rank = {}
@@ -139,7 +139,7 @@ if __name__ == '__main__':
         grade_list = []
         for people in event_to_rank[i]:
             e = i[:-2]
-            m_str = i[2:]
+            m_str = i[-2:]
             if m_str == '单次':
                 m = 0
             else:
@@ -171,7 +171,7 @@ if __name__ == '__main__':
     for i,j in zip(tem_html_part, range(len(tem_html_part)-1)):
         html_parts.append(i)
         html_parts.append(table_html_part[j])
-    html_parts.append(html_parts[-1])
+    html_parts.append(tem_html_part[-1])
 
     html = "".join(html_parts)
 

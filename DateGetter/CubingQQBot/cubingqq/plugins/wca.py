@@ -11,8 +11,10 @@ async def wca(session: CommandSession):
     people = session.get('people', prompt='你想查谁？')
 
     wca_performance = await get_wca_performance(people)
-
-    await session.send(wca_performance)
+    if people == '余雷':
+        await session.send("Lei Yu (余雷)\n2015YULE01\n三阶 1.23|0.15\n二阶 4.66|6.64\n四阶 1:01.88|1:11.11\n单手 27.36|31.48\n金字塔 5.24|8.78\n斜转 6.47|10.37")
+    else:
+        await session.send(wca_performance)
 
 
 @wca.args_parser

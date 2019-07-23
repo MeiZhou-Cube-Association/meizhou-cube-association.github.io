@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup as BS
 
 #To get HTML Text
-def getHTMLText(url):
+def GetHtml(url):
     kv = {'user-agent':'Mozilla/5.0'}
     try:
         r = requests.get(url, timeout=30,headers = kv)
@@ -12,154 +12,113 @@ def getHTMLText(url):
     except:
         return ""
 
-def getPersonList(personList,html):
-    soup = BS(html,'html.parser')
-    count=0 
-    for tr in soup.tbody.find_all('tr'):
-        personList.append([tr.td.div.label.input['data-name'],tr.td.div.label.input['data-id']])
-        count+=1
-    return count
-
-def getPersonURL(personList):
-    rootURL='https://cubingchina.com/results/person/'
-    for eachPerson in personList:
-        eachPerson.append(rootURL+eachPerson[1])
+# search people, get Candidates
+def GetCandidate(name):
+    search_api = 'https://cubingchina.com/results/person?region=World&gender=all&name='
+    search_html = GetHtml(search_api+name)
+    search_soup = BS(search_html, 'html.parser')
     
-def getPersonInfo(personList):
-    for eachPerson in personList:
-        html = getHTMLText (eachPerson[2])
-        soup = BS(html,'html.parser')
-        eventsDict={}
-
-        trList = soup.tbody.find_all('tr')
-        trList = list(trList)
-        for example in trList:
-            try:
-                '''
-                print (example.td.i['title'])
-                print (example('a')[1].string,'|',end='')
-                print (example('a')[2].string)
-                '''
-                if len(example('a')) == 3:
-                    eventsDict[ example.td.i['title'] ]= [ example('a')[1].string, example('a')[2].string ]
-                elif len(example('a')) == 2:
-                    eventsDict[ example.td.i['title'] ]= [ example('a')[1].string, ' ' ]
+    candidates = []
+    candidate_num = 0
+    page_template = ''
+    search_page_num = 0
+    try:
+        page_template = 'https://cubingchina.com'+search_soup.find_all('li')[-2].a['href'].replace(';', '&')
+        page_template = '='.join(page_template.split('=')[:-1])+'='
+        search_page_num = int(search_soup.find_all('li')[-2].a['href'].split('=')[-1])
+    except:
+        # only one page
+        for tr in search_soup.find_all('tr')[1:]:
+            try:# page have people
+                candidates.append(
+                    (
+                        tr.td.div.label.input['data-name'], 
+                        tr.td.div.label.input['data-id'],
+                        tr.find_all("td")[-2].string.strip(),
+                        tr.find_all("td")[-1].string.strip()
+                    )
+                )
+                candidate_num += 1
             except:
-                continue
-        eachPerson.append(eventsDict)
-        return 
-            
-def printPersonInfo(personList,flag):
-    if flag == 1:
-        for person in personList:
-            print (person[0],'\n',person[1])
-            for item in person[3].keys():
-                print (item,'  ',person[3][item][0],'|',person[3][item][1])
-    else:
-        print (len(personList),'items')
-        for i in range(4):
-            print (i+1,'. ',personList[i][0],'\n',personList[i][1])
-        print ('......')
-def GenMsg(personList, num):
-
-    msg = ""
-
-    if num == 1:
-        for person in personList:
-            # print (person[0],'\n',person[1])
-            msg += str(person[0])+'\n'+str(person[1])+'\n'
-            for item in person[3].keys():
-                # print (item,'  ',person[3][item][0],'|',person[3][item][1])
-                msg += str(item)+' '+str(person[3][item][0])+'|'+str(person[3][item][1])+'\n'
-    else:
-        # print (len(personList),'items')
-        msg += str(len(personList))+' items'+'\n'
-        for i in range(min(len(personList), 4)):
-            # print (i+1,'. ',personList[i][0],'\n',personList[i][1])
-            msg += str(i+1)+'. '+str(personList[i][0])+'\n'+str(personList[i][1])+'\n'
-        # print ('......')
-        msg += '......'
-    # print(msg)
-    return msg
-def GenResMsg(personList, num):
-    msg = ""
-    if num == 1:
-        for person in personList:
-            # print (person[0],'\n',person[1])
-            msg += str(person[0])+'\n'+str(person[1])+'\n'
-    else:
-        # print (len(personList),'items')
-        msg += str(len(personList))+' items'+'\n'
-        for i in range(min(len(personList), 4)):
-            # print (i+1,'. ',personList[i][0],'\n',personList[i][1])
-            msg += str(i+1)+'. '+str(personList[i][0])+'\n'+str(personList[i][1])+'\n'
-        # print ('......')
-        msg += '......'
-    # print(msg)
-    return msg
-
-def main():
-    keyWord = input('Please Input')
-    rootURL = 'https://cubingchina.com/results/person?region=World&gender=all&name='
-    personList=[]
-    num = int()
+                return 0, []
+    for i in range(search_page_num):
+        page_url = page_template + str(i+1)
+        page_html = GetHtml(page_url)
+        page_soup = BS(page_html, 'html.parser')
+        for tr in page_soup.find_all('tr')[1:]:
+            candidates.append(
+                (
+                    tr.td.div.label.input['data-name'], 
+                    tr.td.div.label.input['data-id'],
+                    tr.find_all("td")[-2].string.strip(),
+                    tr.find_all("td")[-1].string.strip()
+                )
+            )
+            candidate_num += 1
     
-    resultHTML = getHTMLText (rootURL+keyWord)
-    num = getPersonList (personList, resultHTML)  
-    getPersonURL(personList)
-    getPersonInfo(personList)
+    return candidate_num, candidates
+
+
+# get someone's wca perform 
+# 返回字典
+# event : perform
+def GetPerform(wca_id):
+    people_root = 'https://cubingchina.com/results/person/'
+    people_page = people_root + wca_id
+    people_html = GetHtml(people_page)
+    people_soup = BS(people_html, 'html.parser')
+
+    event2perform = {}
     
-    if num == 1:
-        printPersonInfo(personList,flag = 1)
-    else :
-        printPersonInfo(personList,flag = 0)
-    return 
-def ProcessName(name):
-    try:
-        rootURL = 'https://cubingchina.com/results/person?region=World&gender=all&name='
-        personList=[]
-        num = int()
-        
-        resultHTML = getHTMLText (rootURL+name)
-        num = getPersonList (personList, resultHTML)  
-        getPersonURL(personList)
-        getPersonInfo(personList)
-        if num == 1:
-            msg = GenMsg(personList, 1)
-        else:
-            msg = GenMsg(personList, 0)
-        return msg
-    except:
+    event_list = people_soup.tbody.find_all('tr')
+    for event in event_list:
+        # 因为不一定就是event的表格
+        try:
+            if len(event('a')) == 3: # have avg perform
+                event2perform[event.td.a['href'][1:]] = (
+                    event('a')[1].string, event('a')[2].string
+                )
+            elif len(event('a')) == 2: # only single perform
+                event2perform[event.td.a['href'][1:]] = (
+                    event('a')[1].string, ''
+                )
+        except:
+            continue
+    event2perform['comp_times'] = people_soup.find_all('span')[6].string
+    event2perform['roa_avg'] = people_soup.find_all('tbody')[1].find_all('tr')[1].find_all('td')[1].string
+    event2perform['roa_sig'] = people_soup.find_all('tbody')[1].find_all('tr')[0].find_all('td')[1].string
 
-        return "莫得人，也莫得成绩"
-def ProcessResName(name):
-    try:
-        rootURL = 'https://cubingchina.com/results/person?region=World&gender=all&name='
-        personList=[]
-        num = int()
-        
-        resultHTML = getHTMLText (rootURL+name)
-        num = getPersonList (personList, resultHTML)  
-        getPersonURL(personList)
-        getPersonInfo(personList)
-        if num == 1:
-            msg = GenResMsg(personList, 1)
-        else:
-            msg = GenResMsg(personList, 0)
-        return msg
-    except:
+    solved_trs = people_soup.find_all('tbody')[0].find_all('tr')
+    solved_times = 0
+    for tr in solved_trs:
+        solved_times += int(tr.find_all('td')[-1].string.split('/')[0])
 
-        return "莫得人，也莫得成绩"
-def ProcessId(name):
-    try:
-        rootURL = 'https://cubingchina.com/results/person?region=World&gender=all&name='
-        personList=[]
-        num = int()
-        
-        resultHTML = getHTMLText (rootURL+name)
-        num = getPersonList (personList, resultHTML)  
-        return num
-    except:
-        return -1
-if __name__ == "__main__":
-    main()
+    event2perform['solve_times'] = str(solved_times)
+    return event2perform
+
+def GenMessage(name):
+    message = []
+    cand_num, cands = GetCandidate(name)
+    
+    # fucking you~
+    if cand_num == 0:
+        message += "找不到鸭"
+    elif cand_num == 1:
+        message.append(cands[0][0])
+        message.append(','.join(cands[0][1:]))
+
+        cand_perform = GetPerform(cands[0][1])
+        for i in cand_perform:
+            if isinstance(cand_perform[i], tuple) and len(cand_perform[i]) == 2:
+                message.append('%s %s|%s'%(i, cand_perform[i][0], cand_perform[i][1]))
+            else:
+                message.append('%s %s'%(i, cand_perform[i]))
+    else:
+        message.append('找到了%d个人鸭'%cand_num)
+        for i in range(min(5, cand_num)):
+            message.append('%s|%s'%(cands[i][1], cands[i][0]))
+        if cand_num > 5:
+            message.append("...")
+    return '\n'.join(message)
+
+

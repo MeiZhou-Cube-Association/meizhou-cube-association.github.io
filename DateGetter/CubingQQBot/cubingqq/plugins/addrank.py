@@ -58,15 +58,13 @@ async def _(session: CommandSession):
 async def get_wca_performance(people: str) -> str:
     # print(f'{people}')
     name = f'{people}'
-    # print(name)
-    msg = ProcessResName(name)
-    # print(msg)
+    msg = GenMessage(name)
     return msg
 async def get_wca_id_num(people: str) -> int:
     name = f'{people}'
     print(name)
-    id_num = ProcessId(name)
-    print(id_num)
-    return id_num
+    cand_num, cands = GetCandidate(name)
+    print(cand_num)
+    return cand_num
 
 # @on_command()

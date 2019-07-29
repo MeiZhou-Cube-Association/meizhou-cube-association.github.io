@@ -1,14 +1,43 @@
 <html lang="zh-CN">
 
 <head>
-    <title>Welcome to MZR!</title>
+    <title >Welcome to MZR!</title>
     <link rel="shortcut icon" href=".//images/ico.ico" type="image/x-icon">
-    <link rel="stylesheet" type="text/css", href="./CSS/df_style.css">
+    <link rel="stylesheet" type="text/css" , href="./CSS/df_style.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
 </head>
 
-<body >
-    <h1 style="text-indent:2em">MZR reference</h1>
-    <hr>
+<body>
+    <h1 style="text-indent:2em;">MZR reference</h1>
+    <nav class="navbar navbar-expand-sm navbar-dark bg-info">
+        <div class="container">
+            <a class="navbar-brand text-white">Menu</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsmenu"
+                aria-controls="navbarsmenu" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarsmenu">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="index.html">MZR3<span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="mzr_puls.html">MZR+</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="fmzr.html">FMZR</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html">关于</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="yl_test.html">想康雷叔？</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
     <div class="container">
         <center>
             <div style="text-indent: 33%; text-align:left;">
@@ -16,7 +45,8 @@
                 <p>更新时间：2019.05.03（完成收集数据&HTML自动生成部分，特点：数据不全&未加入链接）</p>
                 <p>更新日期：2019.07.07（更新数据） </p>
                 <p>更新日期：2019.07.23（更新数据,煌神牛逼） </p>
-            </div>  
+                <p>更新日期：2019.07.29（MZR v1.0 上线啦） </p>
+            </div>
             <table border="1" class="dataframe mystyle">
                 <tr>
                     <td colspan="2">单次</td>
@@ -34,7 +64,7 @@
                     <td>AVG2_NAME</td>
                     <td>AVG2_PERF</td>
                 </tr>
-            <tr>
+                <tr>
                     <td>SIG3_NAME</td>
                     <td>SIG3_PERF</td>
                     <td>AVG3_NAME</td>

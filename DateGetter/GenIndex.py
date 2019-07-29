@@ -64,8 +64,8 @@ if __name__ == "__main__":
     raw2perform = dict(zip(raw_list, perform_list))
     print(raw2perform)
     eng2chn = {
-        '222':'二阶',
         '333':'三阶',
+        '222':'二阶',
         '444':'四阶',
         '555':'五阶',
         '666':'六阶',

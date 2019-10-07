@@ -29,6 +29,23 @@ def GetCandidate(name):
         page_template = 'https://cubingchina.com'+search_soup.find_all('li')[-2].a['href'].replace(';', '&')
         page_template = '='.join(page_template.split('=')[:-1])+'='
         search_page_num = int(search_soup.find_all('li')[-2].a['href'].split('=')[-1])
+        candidate_num += (search_page_num-1)*100
+
+        # find the last page's people
+        last_page_url = page_template + str(search_page_num)
+        page_html = GetHtml(last_page_url)
+        page_soup = BS(page_html, 'html.parser')
+        for tr in page_soup.find_all('tr')[1:]:
+            candidates.append(
+                (
+                    tr.td.div.label.input['data-name'], 
+                    tr.td.div.label.input['data-id'],
+                    tr.find_all("td")[-2].string.strip(),
+                    tr.find_all("td")[-1].string.strip()
+                )
+            )
+            candidate_num += 1
+        
     except:
         # only one page
         for tr in search_soup.find_all('tr')[1:]:
@@ -44,20 +61,22 @@ def GetCandidate(name):
                 candidate_num += 1
             except:
                 return 0, []
-    for i in range(search_page_num):
-        page_url = page_template + str(i+1)
-        page_html = GetHtml(page_url)
-        page_soup = BS(page_html, 'html.parser')
-        for tr in page_soup.find_all('tr')[1:]:
-            candidates.append(
-                (
-                    tr.td.div.label.input['data-name'], 
-                    tr.td.div.label.input['data-id'],
-                    tr.find_all("td")[-2].string.strip(),
-                    tr.find_all("td")[-1].string.strip()
-                )
-            )
-            candidate_num += 1
+    
+    
+    # for i in range(search_page_num):
+    #     page_url = page_template + str(i+1)
+    #     page_html = GetHtml(page_url)
+    #     page_soup = BS(page_html, 'html.parser')
+    #     for tr in page_soup.find_all('tr')[1:]:
+    #         candidates.append(
+    #             (
+    #                 tr.td.div.label.input['data-name'], 
+    #                 tr.td.div.label.input['data-id'],
+    #                 tr.find_all("td")[-2].string.strip(),
+    #                 tr.find_all("td")[-1].string.strip()
+    #             )
+    #         )
+    #         candidate_num += 1
     
     return candidate_num, candidates
 

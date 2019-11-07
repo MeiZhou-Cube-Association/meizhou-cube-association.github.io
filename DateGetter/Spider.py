@@ -84,6 +84,13 @@ def GetPerform(wca_id:str)->dict:
         else:
             avg = '%.2f'%avg_raw
         return (sig, avg)
+    def MyMin(v1:str, v2:str)->str:
+        if v1 == '':
+            return v2
+        if v2 == '':
+            return v1
+        return str(min(float(v1), float(v2)))
+
 
     for rnd in result_json['data']: # 对于每一轮
         if rnd['eventId'] not in event2perform: # 之前没出现这个项目
@@ -91,8 +98,8 @@ def GetPerform(wca_id:str)->dict:
         else: # 之前出现过
             sig, avg = event2perform[rnd['eventId']]
             new_sig, new_avg = deco(rnd['best'], rnd['average'])
-            sig = min(sig, new_sig)
-            avg = min(avg, new_avg)
+            sig = MyMin(sig, new_sig)
+            avg = MyMin(avg, new_avg)
             event2perform[rnd['eventId']] = (sig, avg)
 
         # 添加这场比赛, 注意使用的是set, 所以不会加重
@@ -132,5 +139,5 @@ if __name__ == "__main__":
     # '//*[@id="yw1"]/table/tbody/tr[1]/td[2]/a'
     # //*[@id="yw1"]/table/tbody/tr[2]/td[2]/a
 
-    perf = GetPerform('2015PENG05')
+    perf = GetPerform('2017YANG16')
     print(perf)

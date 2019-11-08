@@ -114,8 +114,8 @@ def GetPerform(wca_id:str)->dict:
     html = GetHtml('https://cubingchina.com/results/person/%s'%wca_id)
     html = etree.HTML(html)
     event2perform['roa'] = (
-        html.xpath('//*[@id="yw1"]/table/tbody/tr[1]/td[2]/a/text()')[0],
-        html.xpath('//*[@id="yw1"]/table/tbody/tr[2]/td[2]/a/text()')[0]
+        html.xpath('//*[@id="yw1"]/table/tbody/tr[1]/td[6]/a/text()')[0],
+        html.xpath('//*[@id="yw1"]/table/tbody/tr[2]/td[6]/a/text()')[0]
     )
 
     # 参赛次数和复原次数

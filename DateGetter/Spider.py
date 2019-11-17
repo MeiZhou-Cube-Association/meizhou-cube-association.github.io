@@ -12,7 +12,6 @@ def GetHtml(url:str)->str:
     # 异常处理防止get请求没有返回（被ban的情况etc）
     try:
         r = requests.get(url, timeout=7,headers = kv)
-        # r = requests.get(url, timeout=7)
         r.raise_for_status()
         r.encoding=r.apparent_encoding
         return r.text

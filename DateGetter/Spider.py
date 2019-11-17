@@ -1,20 +1,23 @@
 import json
 import time
 import requests
+import traceback
 from lxml import etree
 
 # 返回html文本
 def GetHtml(url:str)->str:
     kv = {
-        'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36',        
+        'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36',
     }
     # 异常处理防止get请求没有返回（被ban的情况etc）
     try:
         r = requests.get(url, timeout=7,headers = kv)
+        # r = requests.get(url, timeout=7)
         r.raise_for_status()
         r.encoding=r.apparent_encoding
         return r.text
     except:
+        traceback.print_exc()
         return ""
 
 # 按 id/name 粗略查询, 返回所有candidate

@@ -50,6 +50,7 @@ def Rank2Html(ranks, raw2perform, event):
     return table_temp
 
 if __name__ == "__main__":
+    spider = MySpider(0)
     # get cubers
     f = open("wca_id.csv", encoding='utf-8')
     raw_list = f.readlines()
@@ -60,7 +61,7 @@ if __name__ == "__main__":
     perform_list = []
     for i in id_list:
         print(i)
-        perform_list.append(GetPerform(i))
+        perform_list.append(spider.GetPerform(i))
     raw2perform = dict(zip(raw_list, perform_list))
     print(raw2perform)
     eng2chn = {

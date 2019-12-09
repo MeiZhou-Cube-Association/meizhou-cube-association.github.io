@@ -113,7 +113,7 @@ if __name__ == "__main__":
                 a_s += "<a href=\"#%s\"><h6>%s</h6></a>\n"%(t_str, t_str)
             else:
                 t_str = eng2chn[event].split('|')[mode]
-                t_table = "<hr><nav><h2>%s</h2></nav>"%(t_str) + t_table
+                t_table = "<hr id=\"%s\"><nav><h2>%s</h2></nav>"%(t_str, t_str) + t_table
                 a_s += "<a href=\"#%s\"><h6>%s</h6></a>\n"%(t_str, t_str)
             html_parts.insert(-1, t_table)
     a_s = '<div style=\"text-indent: 33%%; text-align:left;\">%s</div>'%a_s

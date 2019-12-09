@@ -1,4 +1,5 @@
 import re
+import sys
 import time
 import pickle
 from Spider import *
@@ -53,7 +54,12 @@ def Rank2Html(ranks, raw2perform, event):
 if __name__ == "__main__":
     spider = MySpider(0)
     # get cubers
-    f = open("wca_id.csv", encoding='utf-8')
+    id_file = ""
+    if len(sys.argv) == 1:
+        id_file = "wca_id.csv"
+    else:
+        id_file = sys.argv[1]
+    f = open(id_file, encoding='utf-8')
     rraw_list = f.readlines()
     rraw_list = [i[:-1] for i in rraw_list]
 
@@ -97,6 +103,7 @@ if __name__ == "__main__":
     } 
 
     html_parts, _ = DevideTemp()
+    a_s = ""
     for event in eng2chn:
         ranks = []
         for mode in range(2):
@@ -122,9 +129,11 @@ if __name__ == "__main__":
             print(ranked_lambs)
             print()
         t_table = Rank2Html(ranks, raw2perform, event)
-        t_table = "<hr><nav><h2>%s</h2></nav>"%eng2chn[event] + t_table
+        t_table = "<hr id=\"%s\"><nav><h2>%s</h2></nav>"%(eng2chn[event], eng2chn[event]) + t_table
+        a_s += "<a href=\"#%s\"><h6>%s</h6></a>\n"%(eng2chn[event], eng2chn[event])
         html_parts.insert(-1, t_table)
-    
+    a_s = '<div style=\"text-indent: 33%%; text-align:left;\">%s</div>'%a_s
+    html_parts.insert(1, a_s)
     f = open("../fmzr.html", encoding='utf-8', mode='w') 
     f.write("\n".join(html_parts))
     

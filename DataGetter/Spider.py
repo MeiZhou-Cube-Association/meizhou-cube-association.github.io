@@ -82,8 +82,9 @@ class MySpider:
 
         # 对数据进行简单清洗
         def deco(sig_raw:int, avg_raw:int)->(str, str):
-            sig_raw /= 100
-            avg_raw /= 100
+            if rnd['eventId'] != '333fm':
+                sig_raw /= 100
+                avg_raw /= 100
             sig = ''
             avg = ''
             if sig_raw <= 0:

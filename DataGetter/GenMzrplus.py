@@ -1,59 +1,49 @@
 import re
+import sys
 import time
+import pandas as pd
 from Spider import *
 
 def DevideTemp():
-    html_file = open("../index_temp.html", encoding='utf-8')
+    html_file = open("../mzr_plus_temp.html", encoding='utf-8')
     html = "".join("".join(html_file.readlines()).split('\n'))
     
     html_parts = re.split("<table.*?.</table>", html)
-    table = re.findall("<table.*?.</table>", html)
-    return html_parts, table[0]
+    return html_parts
 
-def Rank2Html(ranks, raw2perform, event):
-    # padding
-    for i in range(2):
-        while len(ranks[i]) < 3:
-            ranks[i].append('')
+def Rank2Html(rank, raw2perform, event, mode):
+    titles = ['排名', '姓名', '成绩']
+    idxes = [i+1 for i in range(len(rank))]
+    names = [i for i in rank]
+    perfs = [raw2perform[i][event][mode] for i in rank]
+    t_dict = {}
+    t_dict[titles[0]] = idxes
+    t_dict[titles[1]] = names
+    t_dict[titles[2]] = perfs
 
-    _, table_temp = DevideTemp()
-    for i in range(3):
-        table_temp = table_temp.replace("SIG%d_NAME"%(i+1),
+    df = pd.DataFrame(t_dict)
+    df = df[titles]
+    h = df.to_html(index=False)
+    h = h.replace('dataframe', 'dataframe mystyle')
+    for i in rank:
+        h = h.replace(i,
             '<a href="https://cubingchina.com/results/person/%s">%s</a>'%(
-                ranks[0][i].split(',')[0], ranks[0][i].split(',')[-1]
+                i.split(',')[0], i.split(',')[-1]
             )
         )
-        try:
-            table_temp = table_temp.replace("SIG%d_PERF"%(i+1),
-                raw2perform[ranks[0][i]][event][0]
-            )
-        except:
-            table_temp = table_temp.replace("SIG%d_PERF"%(i+1),
-                ''
-            )
-        table_temp = table_temp.replace("AVG%d_NAME"%(i+1),
-            '<a href="https://cubingchina.com/results/person/%s">%s</a>'%(
-                ranks[1][i].split(',')[0], ranks[1][i].split(',')[-1]
-            )
-        )
-        try:
-            table_temp = table_temp.replace("AVG%d_PERF"%(i+1),
-                raw2perform[ranks[1][i]][event][1]
-            )
-        except:
-            table_temp = table_temp.replace("AVG%d_PERF"%(i+1),
-                ''
-            )
-    if event == 'comp_solve':
-        table_temp = table_temp.replace('单次', '参赛次数')
-        table_temp = table_temp.replace('平均', '复原次数')
-    return table_temp
+    return h
 
 if __name__ == "__main__":
     spider = MySpider(0)
     # get cubers
-    f = open("wca_id.csv", encoding='utf-8')
+    id_file = ""
+    if len(sys.argv) == 1:
+        id_file = "wca_id.csv"
+    else:
+        id_file = sys.argv[1]
+    f = open(id_file, encoding='utf-8')
     raw_list = f.readlines()
+    # raw_list = raw_list[:10]
     raw_list = [i[:-1] for i in raw_list]
     name_list = [i.split(',')[1] for i in raw_list]
     id_list = [i.split(',')[0] for i in raw_list] # which also means the links
@@ -86,10 +76,15 @@ if __name__ == "__main__":
         'roa':'全项目',
         'comp_solve':'参赛次数|复原次数',
     } 
+    num2chn = {
+        0: '单次',
+        1: '平均',
+    }
 
-    html_parts, _ = DevideTemp()
+    html_parts = DevideTemp()
+    a_s = ""
     for event in eng2chn:
-        ranks = []
+        
         for mode in range(2):
             print(event, mode)
             lambs = []
@@ -109,13 +104,20 @@ if __name__ == "__main__":
                 ranked_lambs = sorted(lambs, key=sort_key)
             else:
                 ranked_lambs = sorted(lambs, key=sort_key, reverse=True)
-            ranks.append(ranked_lambs[:3])
             print(ranked_lambs)
             print()
-        t_table = Rank2Html(ranks, raw2perform, event)
-        t_table = "<hr><nav><h2>%s</h2></nav>"%eng2chn[event] + t_table
-        html_parts.insert(-1, t_table)
-    
-    f = open("../index.html", encoding='utf-8', mode='w') 
+            t_table = Rank2Html(ranked_lambs, raw2perform, event, mode)
+            if event != 'comp_solve':
+                t_str = "%s%s"%(eng2chn[event], num2chn[mode])
+                t_table = "<hr id=\"%s\"><nav><h2>%s</h2></nav>"%(t_str, t_str) + t_table
+                a_s += "<a href=\"#%s\"><h6>%s</h6></a>\n"%(t_str, t_str)
+            else:
+                t_str = eng2chn[event].split('|')[mode]
+                t_table = "<hr><nav><h2>%s</h2></nav>"%(t_str) + t_table
+                a_s += "<a href=\"#%s\"><h6>%s</h6></a>\n"%(t_str, t_str)
+            html_parts.insert(-1, t_table)
+    a_s = '<div style=\"text-indent: 33%%; text-align:left;\">%s</div>'%a_s
+    html_parts.insert(1, a_s)
+    f = open("../mzr_plus.html", encoding='utf-8', mode='w') 
     f.write("\n".join(html_parts))
     
